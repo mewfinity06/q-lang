@@ -35,7 +35,23 @@ impl<'a> Lexer<'a> {
                 let len = self.read_word()?;
                 let word = &self.content_bytes[start..start + len];
 
-                Ok(Token::Identifier(word))
+                let tk = if word == "const" {
+                    Token::Const
+                } else if word == "let" {
+                    Token::Let
+                } else if word == "mut" {
+                    Token::Mut
+                } else if word == "fn" {
+                    Token::Fn
+                } else if word == "struct" {
+                    Token::Struct
+                } else if word == "enum" {
+                    Token::Enum
+                } else {
+                    Token::Identifier(word)
+                };
+
+                Ok(tk)
             }
             Some(c) if c.is_ascii_digit() => {
                 let len = self.read_number()?;
