@@ -5,10 +5,11 @@ edition = "2024"
 
 [workspace]
 resolver = "3"
-members = ["lexer", "utils"]
+members = ["lexer", "parser", "utils"]
 
 [dependencies]
 load_file = "1.0.1"
-lexer = { path = "lexer" }
-utils = { path = "utils" }
 anyhow = "1.0.99"
+lexer = { path = "lexer" }
+parser = { path = "parser" }
+utils = { path = "utils" }

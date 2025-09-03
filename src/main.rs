@@ -2,6 +2,7 @@
 use load_file::load_str;
 
 use lexer::{self, Lexer, token::Token};
+use parser::{self, Parser, node::*};
 use utils::{self, log};
 
 fn main() -> anyhow::Result<()> {
@@ -16,12 +17,10 @@ fn main() -> anyhow::Result<()> {
     let file_contents = load_str!(&path_absolute.to_str().unwrap());
 
     let lexer = Lexer::new(&file_path, &file_contents);
+    let parser = Parser::new(&file_path, lexer);
 
-    for token in lexer {
-        if token == Token::EOF {
-            break;
-        }
-        log!(DEBUG, "{:?}", token);
+    for node in parser {
+        log!(DEBUG, "{:?}", node);
     }
 
     Ok(())
