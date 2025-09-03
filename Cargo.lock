@@ -3,5 +3,35 @@
 version = 4
 
 [[package]]
+name = "anyhow"
+version = "1.0.99"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b0674a1ddeecb70197781e945de4b3b8ffb61fa939a5597bcf48503737663100"
+
+[[package]]
+name = "lexer"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "utils",
+]
+
+[[package]]
+name = "load_file"
+version = "1.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "31da4bce62428941030036a44d0d4b123f031b04080f8aeb44248b41de3e79cd"
+
+[[package]]
 name = "q-lang"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "lexer",
+ "load_file",
+ "utils",
+]
+
+[[package]]
+name = "utils"
 version = "0.1.0"

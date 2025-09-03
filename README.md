@@ -32,12 +32,10 @@ const sub : fn(a, b: u8)     -> u8 = { return a + b; };
 
 // since functions are declared in this way,
 //     anon functions are declared much same
-const apply_math(
+const apply_math : fn(
   f: fn(u8, u8) -> u8,
   a: u8,
   b: u8
 ) -> u8 = { f(a, b) };
-    
-
-```
+    ```
 
