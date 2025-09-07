@@ -4,8 +4,9 @@ use load_file::load_str;
 use lexer::{self, Lexer, token::Token};
 use parser::{self, Parser, node::*};
 use utils::{self, log};
+use anyhow::Result;
 
-fn main() -> anyhow::Result<()> {
+fn main() -> Result<()> {
     let args = std::env::args();
     if args.len() < 2 {
         log!(ERROR, "No input file provided.");

@@ -9,7 +9,7 @@ members = ["lexer", "parser", "utils"]
 
 [dependencies]
 load_file = "1.0.1"
-anyhow = "1.0.99"
+anyhow = "1.0"
 lexer = { path = "lexer" }
 parser = { path = "parser" }
 utils = { path = "utils" }
