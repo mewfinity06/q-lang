@@ -34,8 +34,26 @@ pub enum ExprKind<'a> {
     },
     FnDecl {
         name: &'a str,
+        params: Vec<Param<'a>>,
+        ret_ty: Type<'a>,
+        body: Vec<Expr<'a>>,
+    },
+    FnCall {
+        name: &'a str,
+        args: Vec<Expr<'a>>,
+    },
+    MacroCall {
+        name: &'a str,
+        args: Vec<Expr<'a>>,
     },
 }
+
+#[derive(Debug)]
+pub struct Param<'a> {
+    pub name: &'a str,
+    pub value: Type<'a>,
+}
+
 
 #[derive(Debug)]
 pub enum Type<'a> {

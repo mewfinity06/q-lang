@@ -57,12 +57,33 @@ parser! {
         },
 
         // Functions
-        Const Ident(name) Colon Fn OParen CParen Arrow ty[t] Equal expr[e] => {
-            todo!()
+        Const Ident(name) Colon Fn OParen fn_params[ps] CParen Arrow ty[t] Equal expr[e] => {
+            Expr {
+                span: span!(),
+                expr: ExprKind::FnDecl { name: name, params: ps, ret_ty: t, body: vec![e] }
+            }
         },
-        Const Ident(name) Colon Fn OParen CParen Arrow ty[t] Equal OBrace expr[e] CBrace => {
-            todo!()
+        Const Ident(name) Colon Fn OParen fn_params[ps] CParen Arrow ty[t] Equal OBrace fn_body[b] CBrace => {
+             Expr {
+                span: span!(),
+                expr: ExprKind::FnDecl { name: name, params: ps, ret_ty: t, body: b }
+            }
         },
+
+        // Calls
+        Ident(name) Bang OParen args[args] CParen => { 
+            Expr {
+                span: span!(),
+                expr: ExprKind::MacroCall { name: name, args: args }
+            }
+         }
+
+        Ident(name) OParen args[args] CParen => {
+            Expr {
+                span: span!(),
+                expr: ExprKind::FnCall { name: name, args: args }
+            }
+        }
 
         // Atom
         atom[a] => a,
@@ -72,6 +93,42 @@ parser! {
         Ident(i) => {
             Type::Ident(i)
         }
+    }
+
+    fn_params: Vec<Param> {
+        => vec![],
+        fn_param[p] => vec![p],
+        fn_params[mut ps] Comma fn_param[p] => {
+            ps.push(p);
+            ps
+        }
+    }
+
+    fn_param: Param {
+        Ident(name) Colon ty[t] => {
+            Param { name, value: t }
+        }
+    }
+
+    fn_body: Vec<Expr> {
+        => vec![],
+        fn_body[mut body] expr[e] Semicolon => {
+            body.push(e);
+            body
+        }
+    }
+
+    args: Vec<Expr> {
+        => vec![],
+        arg[a] => vec![a],
+        args[mut many] Comma arg[a] => {
+            many.push(a);
+            many
+        },
+    }
+
+    arg: Expr {
+        expr[e] => e
     }
 
     atom: Expr {
