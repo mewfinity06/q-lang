@@ -9,12 +9,25 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b0674a1ddeecb70197781e945de4b3b8ffb61fa939a5597bcf48503737663100"
 
 [[package]]
-name = "lexer"
-version = "0.1.0"
+name = "bit-set"
+version = "0.5.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0700ddab506f33b20a03b13996eccd309a48e5ff77d0d95926aa0210fb4e95f1"
 dependencies = [
- "anyhow",
- "utils",
+ "bit-vec",
 ]
+
+[[package]]
+name = "bit-vec"
+version = "0.6.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "349f9b6a179ed607305526ca489b34ad0a41aed5f7980fa90eb03160b69598fb"
+
+[[package]]
+name = "lalr"
+version = "0.0.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "106d7548f95adbe3019b4fc4954554d7b72535867aa9ce326d2f766b68958de7"
 
 [[package]]
 name = "load_file"
@@ -23,12 +36,25 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "31da4bce62428941030036a44d0d4b123f031b04080f8aeb44248b41de3e79cd"
 
 [[package]]
-name = "parser"
-version = "0.1.0"
+name = "plex"
+version = "0.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7d8fc09f81816d9530a29fc1a879c7b4a6b94c3a50bb9d5626a58ae15ca34360"
 dependencies = [
- "anyhow",
- "lexer",
- "utils",
+ "lalr",
+ "proc-macro2",
+ "quote",
+ "redfa",
+ "syn",
+]
+
+[[package]]
+name = "proc-macro2"
+version = "1.0.101"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "89ae43fd86e4158d6db51ad8e2b80f313af9cc74f5c0e03ccb87de09998732de"
+dependencies = [
+ "unicode-ident",
 ]
 
 [[package]]
@@ -36,12 +62,41 @@ name = "q-lang"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "lexer",
  "load_file",
- "parser",
- "utils",
+ "plex",
 ]
 
 [[package]]
-name = "utils"
-version = "0.1.0"
+name = "quote"
+version = "1.0.40"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1885c039570dc00dcb4ff087a89e185fd56bae234ddc7f056a945bf36467248d"
+dependencies = [
+ "proc-macro2",
+]
+
+[[package]]
+name = "redfa"
+version = "0.0.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ba41b4ee12e29433820b330c8ac41d2f01390be8a8ef8ac59ed2b8edeaa7857e"
+dependencies = [
+ "bit-set",
+]
+
+[[package]]
+name = "syn"
+version = "2.0.106"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ede7c438028d4436d71104916910f5bb611972c5cfd7f89b8300a8186e6fada6"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "unicode-ident",
+]
+
+[[package]]
+name = "unicode-ident"
+version = "1.0.18"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5a5f39404a5da50712a4c1eecf25e90dd62b613502b7e925fd4e4d19b5c96512"

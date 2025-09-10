@@ -1,3 +1,3 @@
-const main : fn() -> void = {
-    println!("Hello world!");
-};
+const message := "Hello world!"; 
+
+const main : fn () -> void = { let x := message; };

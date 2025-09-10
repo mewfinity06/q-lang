@@ -1,10 +1,20 @@
+// File attrimutes
 #![allow(unused_imports)]
+
+// Rust imports
+
+// Third party imports
+use anyhow::{Result, bail};
 use load_file::load_str;
 
-use lexer::{self, Lexer, token::Token};
-use parser::{self, Parser, node::*};
-use utils::{self, log};
-use anyhow::Result;
+// Q-lang imports
+use lexer::Lexer;
+
+// Q-lang mods
+mod ast;
+mod lexer;
+mod parser;
+mod utils;
 
 fn main() -> Result<()> {
     let args = std::env::args();
@@ -17,12 +27,27 @@ fn main() -> Result<()> {
     let path_absolute = std::path::absolute(&file_path)?;
     let file_contents = load_str!(&path_absolute.to_str().unwrap());
 
-    let lexer = Lexer::new(&file_path, &file_contents);
-    let parser = Parser::new(&file_path, lexer);
+    let lexer = Lexer::new(file_contents);
+    let program = match parser::parse(lexer) {
+        Ok(p) => p,
+        Err((Some((token, span)), message)) => {
+            log!(
+                ERROR,
+                "found {:?} @ lo: {}, hi: {}",
+                token,
+                span.lo,
+                span.hi
+            );
+            log!(CONTEXT, "{}", message);
+            return Ok(());
+        }
+        Err((None, message)) => {
+            log!(ERROR, "{}", message);
+            return Ok(());
+        }
+    };
 
-    for node in parser {
-        log!(DEBUG, "{:?}", node);
-    }
+    log!(DEBUG, "Program: {:#?}", program);
 
     Ok(())
 }
