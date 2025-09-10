@@ -33,10 +33,8 @@ fn main() -> Result<()> {
         Err((Some((token, span)), message)) => {
             log!(
                 ERROR,
-                "found {:?} @ lo: {}, hi: {}",
-                token,
-                span.lo,
-                span.hi
+                "{}:{}:{} Found `{}` ( {:?} )",
+                file_path, span.row, span.col, token, token,
             );
             log!(CONTEXT, "{}", message);
             return Ok(());

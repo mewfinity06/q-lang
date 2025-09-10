@@ -16,8 +16,10 @@ parser! {
 
     (a, b) {
         Span {
-            lo: a.lo,
-            hi: b.hi
+            row: a.row,
+            col: a.col,
+            end_row: b.end_row,
+            end_col: b.end_col,
         }
     }
 
