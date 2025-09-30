@@ -1,6 +1,11 @@
 const std = @import("std");
 const q = @import("q_lang");
 
+const lexer_lib = @import("lexer.zig");
+const Lexer = lexer_lib.Lexer;
+const Token = Lexer.Token;
+const Span = Token.Span;
+
 const USAGE =
     \\ Usage: q-lang <file>
     \\
@@ -33,6 +38,21 @@ pub fn main() !u8 {
 
     // FIXME: We should check if readAll equals file_size but it's not super important now
     _ = try file.readAll(buffer);
+
+    var lexer = Lexer.init(buffer);
+    const token: *Token = &lexer.token;
+
+    while (true) {
+        try lexer.next(alloc);
+
+        std.debug.print("Token: {any}\n", .{token});
+        if (token.kind == .eof) {
+            break;
+        } else if (token.kind == .err) {
+            std.debug.print("Unhandled: `{s}` @ {}, {}\n", .{ token.word, token.span.lo, token.span.hi });
+            return 1;
+        }
+    }
 
     return 0;
 }
