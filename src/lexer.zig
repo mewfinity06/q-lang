@@ -7,14 +7,23 @@ pub const Lexer = struct {
 
         word: []const u8 = "null",
         span: Span = .{},
-        kind: enum {
+        kind: union(enum) {
             sof, // start of file
             eof,
-            err,
-        } = .err,
+            err: []const u8, // message
+        },
 
-        pub fn display(self: Token) void {
-            _ = self;
+        pub fn display(self: Token, log: type) void {
+            if (self.kind == .sof)
+                log.info("START OF FILE", .{})
+            else if (self.kind == .eof)
+                log.info("END OF FILE", .{})
+            else
+                log.info("Found `{s}` @ {}..{}", .{
+                    self.word,
+                    self.span.lo,
+                    self.span.hi,
+                });
         }
     };
 
@@ -28,5 +37,7 @@ pub const Lexer = struct {
         };
     }
 
-    pub fn next(_: *Lexer, _: std.mem.Allocator) !void {}
+    pub fn next(_: *Lexer, token: *?Token) !void {
+        token.* = null;
+    }
 };

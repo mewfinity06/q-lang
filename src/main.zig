@@ -1,31 +1,33 @@
 const std = @import("std");
 const q = @import("q_lang");
 
+const log = std.log.scoped(.q);
+
 const lexer_lib = @import("lexer.zig");
 const Lexer = lexer_lib.Lexer;
 const Token = Lexer.Token;
 const Span = Token.Span;
 
 const USAGE =
-    \\ Usage: q-lang <file>
+    \\Usage: q-lang <file>
     \\
 ;
 
 pub fn main() !u8 {
-    var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
+    // NOTE: DebugAllocator.safety is off due to weird bug when freeing `args`
+    //       Once this is resolved, turn safety back on
+    var arena: std.heap.DebugAllocator(.{ .safety = false }) = .init;
     const alloc = arena.allocator();
-    defer arena.deinit();
+    defer _ = arena.deinit();
 
-    // Get args
+    // NOTE: See DebugAllocator
     const args = try std.process.argsAlloc(alloc);
-    defer alloc.free(args);
 
     if (args.len <= 1) {
-        std.debug.print("{s}", .{USAGE});
+        log.err("{s}", .{USAGE});
         return 1;
     }
 
-    // Open and read file
     const path_absolute = try std.fs.cwd().realpathAlloc(alloc, args[1]);
     defer alloc.free(path_absolute);
 
@@ -39,19 +41,11 @@ pub fn main() !u8 {
     // FIXME: We should check if readAll equals file_size but it's not super important now
     _ = try file.readAll(buffer);
 
-    var lexer = Lexer.init(buffer);
-    const token: *Token = &lexer.token;
+    var lexer = Lexer{ .source = buffer };
+    var token: ?Token = Token{ .kind = .sof };
 
-    while (true) {
-        try lexer.next(alloc);
-
-        std.debug.print("Token: {any}\n", .{token});
-        if (token.kind == .eof) {
-            break;
-        } else if (token.kind == .err) {
-            std.debug.print("Unhandled: `{s}` @ {}, {}\n", .{ token.word, token.span.lo, token.span.hi });
-            return 1;
-        }
+    while (token != null) : (try lexer.next(&token)) {
+        token.?.display(log);
     }
 
     return 0;
