@@ -1,7 +1,7 @@
 const std = @import("std");
 const q = @import("q_lang");
 
-const log = std.log.scoped(.q);
+const log = q.log;
 
 const lexer_lib = @import("lexer.zig");
 const Lexer = lexer_lib.Lexer;
@@ -28,24 +28,16 @@ pub fn main() !u8 {
         return 1;
     }
 
-    const path_absolute = try std.fs.cwd().realpathAlloc(alloc, args[1]);
-    defer alloc.free(path_absolute);
+    const file_name = args[args.len - 1];
 
-    const file = try std.fs.openFileAbsolute(path_absolute, .{ .mode = .read_only });
-    const file_stat = try file.stat();
-    const file_size: usize = @intCast(file_stat.size);
+    const file_contents = try q.readFile(alloc, file_name);
+    defer alloc.free(file_contents);
 
-    const buffer = try alloc.alloc(u8, file_size);
-    defer alloc.free(buffer);
-
-    // FIXME: We should check if readAll equals file_size but it's not super important now
-    _ = try file.readAll(buffer);
-
-    var lexer = Lexer{ .source = buffer };
+    var lexer = Lexer{ .source = file_contents };
     var token: ?Token = Token{ .kind = .sof };
 
     while (token != null) : (try lexer.next(&token)) {
-        token.?.display(log);
+        token.?.display();
     }
 
     return 0;

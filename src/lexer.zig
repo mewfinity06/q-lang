@@ -1,6 +1,8 @@
 const std = @import("std");
 const q = @import("q_lang");
 
+const log = q.log;
+
 pub const Lexer = struct {
     pub const Token = struct {
         pub const Span = struct { lo: usize = 0, hi: usize = 0 };
@@ -13,7 +15,7 @@ pub const Lexer = struct {
             err: []const u8, // message
         },
 
-        pub fn display(self: Token, log: type) void {
+        pub fn display(self: Token) void {
             if (self.kind == .sof)
                 log.info("START OF FILE", .{})
             else if (self.kind == .eof)
